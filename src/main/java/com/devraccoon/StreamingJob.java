@@ -58,6 +58,8 @@ public class StreamingJob {
 		 *
 		 */
 
+		env.fromElements(1,2,3,4,5).print();
+
 		// execute program
 		env.execute("Flink Streaming Java API Skeleton");
 	}
