@@ -2,4 +2,5 @@ target/
 .idea/
 data/
 out/
+dependency-reduced-pom.xml
 
