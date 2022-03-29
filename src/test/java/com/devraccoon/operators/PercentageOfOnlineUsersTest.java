@@ -1,7 +1,6 @@
 package com.devraccoon.operators;
 
-import com.devraccoon.models.PlayerEvent;
-import com.devraccoon.models.PlayerEventType;
+import com.devraccoon.models.*;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.util.Collector;
@@ -17,11 +16,11 @@ import static org.mockito.Mockito.times;
 public class PercentageOfOnlineUsersTest {
 
     private final Tuple3[] testCases = new Tuple3[]{
-            Tuple3.of(new PlayerEvent(Instant.now(), UUID.randomUUID(), PlayerEventType.REGISTERED), 1, Tuple2.of(1L, 0L)),
-            Tuple3.of(new PlayerEvent(Instant.now(), UUID.randomUUID(), PlayerEventType.REGISTERED), 1, Tuple2.of(2L, 0L)),
-            Tuple3.of(new PlayerEvent(Instant.now(), UUID.randomUUID(), PlayerEventType.ONLINE), 1, Tuple2.of(2L, 1L)),
-            Tuple3.of(new PlayerEvent(Instant.now(), UUID.randomUUID(), PlayerEventType.ONLINE), 1, Tuple2.of(2L, 2L)),
-            Tuple3.of(new PlayerEvent(Instant.now(), UUID.randomUUID(), PlayerEventType.OFFLINE), 2, Tuple2.of(2L, 1L)),
+            Tuple3.of(new PlayerEventRegistered(Instant.now(), UUID.randomUUID()), 1, Tuple2.of(1L, 0L)),
+            Tuple3.of(new PlayerEventRegistered(Instant.now(), UUID.randomUUID()), 1, Tuple2.of(2L, 0L)),
+            Tuple3.of(new PlayerEventOnline(Instant.now(), UUID.randomUUID()), 1, Tuple2.of(2L, 1L)),
+            Tuple3.of(new PlayerEventOnline(Instant.now(), UUID.randomUUID()), 1, Tuple2.of(2L, 2L)),
+            Tuple3.of(new PlayerEventOffline(Instant.now(), UUID.randomUUID()), 2, Tuple2.of(2L, 1L)),
     };
 
     @Test
@@ -34,7 +33,5 @@ public class PercentageOfOnlineUsersTest {
             Mockito.verify(collector, times(t.f1)).collect(t.f2);
         }
     }
-
-
 
 }

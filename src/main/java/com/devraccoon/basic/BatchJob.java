@@ -16,14 +16,10 @@
  * limitations under the License.
  */
 
-package com.devraccoon;
+package com.devraccoon.basic;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.java.ExecutionEnvironment;
-import org.apache.flink.api.java.operators.DataSource;
-import org.apache.flink.api.java.operators.MapOperator;
-import org.apache.flink.api.java.tuple.Tuple2;
 
 import java.util.Objects;
 

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.devraccoon;
+package com.devraccoon.basic;
 
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.java.tuple.Tuple2;
