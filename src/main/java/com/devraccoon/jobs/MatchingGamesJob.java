@@ -18,6 +18,8 @@ import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.co.KeyedBroadcastProcessFunction;
 import org.apache.flink.util.Collector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.util.*;
@@ -34,7 +36,6 @@ public class MatchingGamesJob {
 
         DataStream<String> mapNames = env.fromSource(mapNamesSource, WatermarkStrategy.noWatermarks(), "map names")
                 .map(m -> String.format("Discovered map: %s", m));
-
 
         DataStream<PlayerEventLookingForGame> gameRequestsStream = BattleNetStream
                 .getPlayerEventDataStream(args, "battlenet-events-processor-2", env, true)
@@ -67,6 +68,8 @@ public class MatchingGamesJob {
 
 class FindGameMatch extends KeyedBroadcastProcessFunction<Integer, PlayerEventLookingForGame, String, GameFound> {
 
+    private static final Logger logger = LoggerFactory.getLogger(FindGameMatch.class);
+
     private final ListStateDescriptor<UUID> queueStateDescriptor = new ListStateDescriptor<>(
             "playersQueue", TypeInformation.of(UUID.class)
     );
@@ -92,10 +95,11 @@ class FindGameMatch extends KeyedBroadcastProcessFunction<Integer, PlayerEventLo
 
         long currentCount = Optional.ofNullable(stateCount.value()).orElse(0L);
 
-        if ( ctx.getCurrentKey() >= currentCount + 1) {
+        if ( ctx.getCurrentKey() <= currentCount + 1) {
             Set<UUID> players = Optional.ofNullable(statePlayersQueue.get()).map(pq -> StreamSupport.stream(pq.spliterator(), false).collect(Collectors.toSet()))
                     .orElse(new HashSet<>());
             players.add(value.getPlayerId());
+
             out.collect(new GameFound(players, GameType.valueOf(ctx.getCurrentKey()).get(), getRandomMap(ctx)));
             statePlayersQueue.clear();
             stateCount.update(0L);
